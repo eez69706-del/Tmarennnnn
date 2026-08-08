@@ -24,6 +24,7 @@ button.card{display:block;text-align:right}
 .kicker{color:var(--gold2);font-weight:900;font-size:13px;letter-spacing:.5px}.hero h1{font-size:clamp(42px,7vw,78px);line-height:1.02;margin:12px 0}.gold{color:var(--gold)}
 .sub{color:var(--muted);font-size:18px;max-width:650px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
 .btn{border:0;border-radius:13px;padding:12px 17px;background:var(--gold);color:#111;font-weight:900}.btn.secondary{background:var(--panel2);color:#fff;border:1px solid var(--line)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
 .heroPhoto{height:520px;border-radius:28px;overflow:hidden;border:1px solid #323a47;box-shadow:0 30px 100px #000a;background:linear-gradient(135deg,#252016,#11151c);position:relative}
 .heroPhoto img{width:100%;height:100%;object-fit:cover;display:block}.photoOverlay{position:absolute;inset:auto 18px 18px 18px;background:#07090dcc;border:1px solid #ffffff1c;border-radius:18px;padding:14px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:25px}.stat{background:var(--panel);border:1px solid var(--line);padding:15px;border-radius:16px}.stat b{font-size:24px}.stat small{display:block;color:var(--muted)}
@@ -42,6 +43,36 @@ button.card{display:block;text-align:right}
 footer{text-align:center;border-top:1px solid var(--line);padding:30px;color:var(--muted)}
 @media(max-width:850px){.hero,.proteinBox,.videoGrid,.tracker{grid-template-columns:1fr}.heroPhoto{height:360px}.grid{grid-template-columns:1fr 1fr}.daygrid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.grid{grid-template-columns:1fr}.hero h1{font-size:46px}.container{padding-inline:14px}}
+
+/* ===== تصوير السعرات ===== */
+.calZone{text-align:center;padding:44px 20px;border:2px dashed #4a3d1c;border-radius:20px;background:repeating-linear-gradient(135deg,rgba(245,183,46,.04) 0 10px,transparent 10px 20px)}
+.calZone .emoji{font-size:50px;margin-bottom:14px}
+.calZone h3{margin:0 0 6px}
+#calPreviewArea{display:none}
+.calPreviewWrap{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line)}
+.calPreviewWrap img{width:100%;display:block;max-height:380px;object-fit:cover}
+.calRetake{position:absolute;top:10px;left:10px;background:#07090dcc;color:#fff;border:1px solid #ffffff2a;padding:9px 14px;border-radius:30px}
+#calLoadingArea{display:none;align-items:center;justify-content:center;gap:10px;padding:34px 0}
+.calSpinner{width:22px;height:22px;border:3px solid #2a2110;border-top-color:var(--gold);border-radius:50%;animation:calSpin .8s linear infinite}
+@keyframes calSpin{to{transform:rotate(360deg)}}
+.calResult{animation:fade .35s ease}
+.calTotal{text-align:center;padding:20px 10px 16px;border-bottom:1px solid var(--line)}
+.calNum{font-size:52px;font-weight:1000;color:var(--gold)}
+.calNum span{font-size:16px;color:var(--text);font-weight:700;margin-right:6px}
+.calName{margin-top:6px;font-weight:900}
+.calConf{margin-top:4px;font-size:12px;color:var(--muted)}
+.calMacros{display:flex;gap:10px;margin-top:16px}
+.calMacro{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center}
+.calMacro b{display:block;font-size:19px;font-weight:900}
+.calMacro span{font-size:10px;color:var(--muted)}
+.calMacro.p{border-bottom:3px solid var(--green)}
+.calMacro.c{border-bottom:3px solid var(--gold)}
+.calMacro.f{border-bottom:3px solid var(--danger)}
+.calItems{margin-top:18px}
+.calItems h4{font-size:12px;color:var(--muted);margin-bottom:8px}
+.calItemRow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--line)}
+.calItemRow b{color:var(--gold)}
+.calErr{margin-top:14px;padding:14px;border-radius:14px;background:#2a120f;border:1px solid #5a2a24;color:#ffb3ab;font-size:13px;text-align:center}
 </style>
 </head>
 <body>
@@ -50,6 +81,7 @@ footer{text-align:center;border-top:1px solid var(--line);padding:30px;color:var
 <button class="menuBtn" data-go="home">⌂ الرئيسية</button>
 <button class="menuBtn" data-go="food">🍽️ الأكل</button>
 <button class="menuBtn" data-go="workout">🏋️ التمارين</button>
+<button class="menuBtn" data-go="calories">📸 تصوير السعرات</button>
 <button class="menuBtn" data-go="achievements">🏆 الإنجازات</button>
 <button class="menuBtn" data-go="reports">📊 التقارير</button>
 </div></div></header>
@@ -66,7 +98,7 @@ footer{text-align:center;border-top:1px solid var(--line);padding:30px;color:var
 <div class="actions">
 <button class="btn" data-go="food">🍽️ خطة الأكل</button>
 <button class="btn secondary" data-go="workout">🏋️ التمارين</button>
-<button class="btn secondary" data-go="videos">▶️ فيديوهات الشرح</button>
+<button class="btn secondary" data-go="calories">📸 تصوير السعرات</button>
 </div>
 <div class="stats">
 <div class="stat"><b>48</b><small>كجم تقريبًا</small></div><div class="stat"><b>169–170</b><small>سم تقريبًا</small></div><div class="stat"><b>50–65g</b><small>بروتين تقريبي للخطة</small></div><div class="stat"><b>8–10h</b><small>نوم</small></div>
@@ -83,6 +115,7 @@ footer{text-align:center;border-top:1px solid var(--line);padding:30px;color:var
 <div class="grid">
 <button class="card" data-go="food" style="text-align:right;width:100%;border:1px solid var(--line)"><div class="emoji">🍽️</div><h3>خطة الأكل</h3><p>وجبات، سناكات، ومشروبات بروتين.</p></button>
 <button class="card" data-go="workout" style="text-align:right;width:100%;border:1px solid var(--line)"><div class="emoji">🏋️</div><h3>برنامج التمارين</h3><p>دنابل + وزن جسم لكل يوم.</p></button>
+<button class="card" data-go="calories" style="text-align:right;width:100%;border:1px solid var(--line)"><div class="emoji">📸</div><h3>تصوير السعرات</h3><p>صوّر أكلك واحصل على السعرات فورًا.</p></button>
 <button class="card" data-go="videos" style="text-align:right;width:100%;border:1px solid var(--line)"><div class="emoji">▶️</div><h3>فيديوهات الشرح</h3><p>شرح كل حركة خطوة بخطوة.</p></button>
 <button class="card" data-go="week" style="text-align:right;width:100%;border:1px solid var(--line)"><div class="emoji">📅</div><h3>الجدول الأسبوعي</h3><p>وش تسوي كل يوم بالأسبوع.</p></button>
 <button class="card" data-go="achievements" style="text-align:right;width:100%;border:1px solid var(--line)"><div class="emoji">🏆</div><h3>إنجازات اليوم</h3><p>تمارين، أكل، وبروتين اليوم.</p></button>
@@ -139,6 +172,43 @@ footer{text-align:center;border-top:1px solid var(--line);padding:30px;color:var
 <div class="exercise"><div class="exicon">🏃</div><div><b>جهاز المشي</b><br><small class="muted">كارديو خفيف</small></div><div class="sets">15–20 دقيقة</div></div></div>
 </div>
 <div class="notice" style="margin-top:18px"><b>التدرج:</b> إذا صار الوزن سهلًا جدًا مع تكنيك ممتاز، زد زيادة صغيرة. لا تتمرن من خلال ألم حاد، وخل ولي أمرك يعرف بخطة التمرين.</div>
+</div>
+</section>
+
+<!-- CALORIES (تصوير السعرات) -->
+<section id="calories" class="page">
+<div class="container">
+<div class="pageHead"><div><h2>📸 تصوير السعرات</h2><p>صوّر أكلك، والذكاء الاصطناعي يحسب لك السعرات فورًا.</p></div><button class="back" data-go="home">← القائمة</button></div>
+
+<div class="card">
+
+  <div id="calZone" class="calZone">
+    <div class="emoji">📸</div>
+    <h3>صوّر أكلك</h3>
+    <p class="muted" style="margin-top:6px">اضغط الزر ليفتح لك كاميرا الجوال مباشرة</p>
+    <button id="calCameraBtn" class="btn" style="width:100%;margin-top:22px">📸 فتح الكاميرا</button>
+    <input type="file" id="calCameraInput" accept="image/*" capture="environment" style="display:none">
+  </div>
+
+  <div id="calPreviewArea">
+    <div class="calPreviewWrap">
+      <img id="calPreviewImg" alt="صورة الأكل">
+      <button id="calRetakeBtn" class="calRetake">↺ تصوير مرة ثانية</button>
+    </div>
+    <button id="calAnalyzeBtn" class="btn" style="width:100%;margin-top:16px">🔥 احسب السعرات</button>
+  </div>
+
+  <div id="calLoadingArea">
+    <div class="calSpinner"></div>
+    <span>الذكاء الاصطناعي يحلل الأكل...</span>
+  </div>
+
+  <div id="calResultArea"></div>
+  <div id="calErrorArea"></div>
+
+</div>
+
+<div class="notice" style="margin-top:18px"><b>ملاحظة:</b> التقدير تقريبي وقد يختلف حسب حجم الحصة وطريقة التحضير. صوّر أكلك فقط — لا يمكن رفع صور من المعرض.</div>
 </div>
 </section>
 
@@ -605,6 +675,229 @@ setInterval(()=>{
     renderReports();
   }
 },60000);
+
+/* =====================================================
+   📸 تصوير السعرات — يحلل صورة الأكل عبر Gemini
+   المصدر مقيّد بالكاميرا فقط (capture="environment"):
+   ما فيه خيار "إضافة من المعرض"، فقط تصوير مباشر.
+===================================================== */
+const CAL_GEMINI_API_KEY = "AQ.Ab8RN6KGpsagP4xyJgKU-TKBshcE-TYByLz5P-jtDZ21vwrPzw";
+const CAL_GEMINI_MODEL = "gemini-flash-latest";
+
+const calCameraBtn=document.getElementById('calCameraBtn');
+const calCameraInput=document.getElementById('calCameraInput');
+const calPreviewArea=document.getElementById('calPreviewArea');
+const calPreviewImg=document.getElementById('calPreviewImg');
+const calRetakeBtn=document.getElementById('calRetakeBtn');
+const calAnalyzeBtn=document.getElementById('calAnalyzeBtn');
+const calZone=document.getElementById('calZone');
+const calLoadingArea=document.getElementById('calLoadingArea');
+const calResultArea=document.getElementById('calResultArea');
+const calErrorArea=document.getElementById('calErrorArea');
+
+let calBase64=null, calMediaType=null;
+
+if(calCameraBtn){
+  calCameraBtn.addEventListener('click',()=>calCameraInput.click());
+}
+
+if(calCameraInput){
+  calCameraInput.addEventListener('change',ev=>{
+    const file=ev.target.files[0];
+    if(!file)return;
+    calHandleImage(file);
+  });
+}
+
+function calHandleImage(file){
+  if(!file.type.startsWith('image/')){
+    calErrorArea.innerHTML='<div class="calErr">الملف ليس صورة.</div>';
+    return;
+  }
+  calMediaType=file.type;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const result=reader.result;
+    calBase64=result.split(',')[1];
+    calPreviewImg.src=result;
+    calZone.style.display='none';
+    calPreviewArea.style.display='block';
+    calErrorArea.innerHTML='';
+    calResultArea.innerHTML='';
+  };
+  reader.readAsDataURL(file);
+}
+
+if(calRetakeBtn){
+  calRetakeBtn.addEventListener('click',()=>{
+    calCameraInput.value='';
+    calBase64=null; calMediaType=null;
+    calPreviewArea.style.display='none';
+    calZone.style.display='block';
+    calResultArea.innerHTML='';
+    calErrorArea.innerHTML='';
+  });
+}
+
+if(calAnalyzeBtn){
+  calAnalyzeBtn.addEventListener('click',calAnalyzeFood);
+}
+
+async function calAnalyzeFood(){
+  if(!calBase64)return;
+
+  if(!CAL_GEMINI_API_KEY){
+    calErrorArea.innerHTML='<div class="calErr">حط Gemini API Key داخل الكود.</div>';
+    return;
+  }
+
+  calPreviewArea.style.display='none';
+  calLoadingArea.style.display='flex';
+  calResultArea.innerHTML='';
+  calErrorArea.innerHTML='';
+  calAnalyzeBtn.disabled=true;
+
+  try{
+    const url=`https://generativelanguage.googleapis.com/v1beta/models/${CAL_GEMINI_MODEL}:generateContent?key=${encodeURIComponent(CAL_GEMINI_API_KEY)}`;
+
+    const responseSchema={
+      type:"OBJECT",
+      properties:{
+        dish_name:{type:"STRING"},
+        total_calories:{type:"INTEGER"},
+        confidence:{type:"STRING",enum:["عالية","متوسطة","منخفضة"]},
+        protein_g:{type:"NUMBER"},
+        carbs_g:{type:"NUMBER"},
+        fat_g:{type:"NUMBER"},
+        items:{
+          type:"ARRAY",
+          items:{
+            type:"OBJECT",
+            properties:{
+              name:{type:"STRING"},
+              calories:{type:"INTEGER"}
+            },
+            required:["name","calories"]
+          }
+        }
+      },
+      required:["dish_name","total_calories","confidence","protein_g","carbs_g","fat_g","items"]
+    };
+
+    const response=await fetch(url,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        contents:[{
+          parts:[
+            {inline_data:{mime_type:calMediaType,data:calBase64}},
+            {text:`
+أنت خبير في تحليل الطعام والسعرات.
+حلل صورة الطعام.
+حدد:
+1. اسم الوجبة.
+2. إجمالي السعرات.
+3. البروتين.
+4. الكربوهيدرات.
+5. الدهون.
+6. كل مكون ظاهر في الصورة وسعراته.
+قدّر حجم الحصة من الصورة.
+لا تضف مكونات غير ظاهرة.
+إذا لم يكن هناك طعام واضح:
+اجعل total_calories = 0
+و items = [].
+أجب بالبيانات المطلوبة فقط.
+            `}
+          ]
+        }],
+        generationConfig:{
+          temperature:0.1,
+          responseMimeType:'application/json',
+          responseSchema:responseSchema
+        }
+      })
+    });
+
+    const data=await response.json();
+
+    if(!response.ok){
+      console.error('Gemini Error:',data);
+      throw new Error(data?.error?.message || 'خطأ في Gemini API');
+    }
+
+    const text=data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(!text){
+      console.error('Gemini Response:',data);
+      throw new Error('Gemini لم يرجع نتيجة.');
+    }
+
+    let result;
+    try{
+      result=JSON.parse(text);
+    }catch(error){
+      console.error('JSON:',text);
+      throw new Error('Gemini رجع بيانات غير صالحة.');
+    }
+
+    calLoadingArea.style.display='none';
+    calAnalyzeBtn.disabled=false;
+    calRenderResult(result);
+
+  }catch(error){
+    console.error(error);
+    calLoadingArea.style.display='none';
+    calPreviewArea.style.display='block';
+    calAnalyzeBtn.disabled=false;
+    calErrorArea.innerHTML=`<div class="calErr">صار خطأ أثناء التحليل.<br><br>${calEscapeHtml(error.message)}</div>`;
+  }
+}
+
+function calRenderResult(d){
+  const calories=Number(d.total_calories)||0;
+
+  if(calories<=0){
+    calResultArea.innerHTML=`<div class="calResult"><div class="calErr">ما قدرت أتعرف على الطعام. حاول تصور الأكل من زاوية أوضح.</div></div>`;
+    calPreviewArea.style.display='block';
+    return;
+  }
+
+  let itemsHtml='';
+  if(Array.isArray(d.items)){
+    itemsHtml=d.items.map(item=>`
+      <div class="calItemRow">
+        <span>${calEscapeHtml(item.name||'مكون')}</span>
+        <b>${Number(item.calories)||0} سعرة</b>
+      </div>
+    `).join('');
+  }
+
+  calResultArea.innerHTML=`
+    <div class="calResult">
+      <div class="calTotal">
+        <div class="calNum">${calories}<span>سعرة حرارية</span></div>
+        <div class="calName">${calEscapeHtml(d.dish_name||'وجبة')}</div>
+        <div class="calConf">دقة التقدير: ${calEscapeHtml(d.confidence||'متوسطة')}</div>
+      </div>
+      <div class="calMacros">
+        <div class="calMacro p"><b>${Number(d.protein_g)||0}g</b><span>بروتين</span></div>
+        <div class="calMacro c"><b>${Number(d.carbs_g)||0}g</b><span>كربوهيدرات</span></div>
+        <div class="calMacro f"><b>${Number(d.fat_g)||0}g</b><span>دهون</span></div>
+      </div>
+      ${itemsHtml ? `<div class="calItems"><h4>مكونات الوجبة</h4>${itemsHtml}</div>` : ''}
+    </div>
+  `;
+
+  calPreviewArea.style.display='block';
+}
+
+function calEscapeHtml(value){
+  return String(value)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
 
 window.addEventListener('load',()=>{
   const id=location.hash.substring(1);
